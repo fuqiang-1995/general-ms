@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="">
-    
-    
+<mapper namespace="com.example.generalms.mapper.SysUserMapper">
+
+    <resultMap id="userInfo" type="SysUser">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="password" property="password"/>
+        <collection property="roles" ofType="SysRole">
+            <id column="role_id" property="id"/>
+            <result column="role_code" property="roleCode"/>
+            <result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUserInfoById" resultMap="userInfo">
+        SELECT
+            u.id,
+            u.user_name,
+            u.nick_name,
+            u.`password`,
+            r.id role_id,
+            r.role_code,
+            r.role_name
+        FROM
+            sys_user u
+                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                LEFT JOIN sys_role r ON ur.role_id = r.id
+        WHERE
+            u.id = #{id};
+    </select>
+
+    <select id="getUserInfoById" resultMap="userInfo">
+        SELECT
+            u.id,
+            u.user_name,
+            u.nick_name,
+            u.`password`,
+            r.id role_id,
+            r.role_code,
+            r.role_name
+        FROM
+            sys_user u
+                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                LEFT JOIN sys_role r ON ur.role_id = r.id
+        WHERE
+            u.user_name = #{name};
+    </select>
+
 </mapper>
