@@ -35,6 +35,6 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return false;
+        return true;
     }
 }

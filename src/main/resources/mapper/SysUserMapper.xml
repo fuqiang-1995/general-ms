@@ -4,8 +4,8 @@
 
     <resultMap id="userInfo" type="SysUser">
         <id column="id" property="id"/>
-        <result column="user_name" property="userName"/>
-        <result column="nick_name" property="nickName"/>
+        <result column="username" property="username"/>
+        <result column="nickname" property="nickname"/>
         <result column="password" property="password"/>
         <collection property="roles" ofType="SysRole">
             <id column="role_id" property="id"/>
@@ -15,37 +15,31 @@
     </resultMap>
 
     <select id="getUserInfoById" resultMap="userInfo">
-        SELECT
-            u.id,
-            u.user_name,
-            u.nick_name,
-            u.`password`,
-            r.id role_id,
-            r.role_code,
-            r.role_name
-        FROM
-            sys_user u
-                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
-                LEFT JOIN sys_role r ON ur.role_id = r.id
-        WHERE
-            u.id = #{id};
+        SELECT u.id,
+               u.username,
+               u.nickname,
+               u.`password`,
+               r.id role_id,
+               r.role_code,
+               r.role_name
+        FROM sys_user u
+                 LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                 LEFT JOIN sys_role r ON ur.role_id = r.id
+        WHERE u.id = #{id};
     </select>
 
-    <select id="getUserInfoById" resultMap="userInfo">
-        SELECT
-            u.id,
-            u.user_name,
-            u.nick_name,
-            u.`password`,
-            r.id role_id,
-            r.role_code,
-            r.role_name
-        FROM
-            sys_user u
-                LEFT JOIN sys_user_role ur ON u.id = ur.user_id
-                LEFT JOIN sys_role r ON ur.role_id = r.id
-        WHERE
-            u.user_name = #{name};
+    <select id="getUserInfoByName" resultMap="userInfo">
+        SELECT u.id,
+               u.username,
+               u.nickname,
+               u.`password`,
+               r.id role_id,
+               r.role_code,
+               r.role_name
+        FROM sys_user u
+                 LEFT JOIN sys_user_role ur ON u.id = ur.user_id
+                 LEFT JOIN sys_role r ON ur.role_id = r.id
+        WHERE u.username = #{name};
     </select>
 
 </mapper>

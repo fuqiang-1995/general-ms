@@ -9,11 +9,17 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import java.io.IOException;
+
 @Component
 public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor implements Filter {
 
     @Autowired
     MySecurityMetadataSource mySecurityMetadataSource;
+
+    @Autowired
+    public void setMyAccessDecisionManager(MyAccessDecisionManager myAccessDecisionManager) {
+        super.setAccessDecisionManager(myAccessDecisionManager);
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -36,4 +42,6 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor imp
     public SecurityMetadataSource obtainSecurityMetadataSource() {
         return this.mySecurityMetadataSource;
     }
+
+
 }
