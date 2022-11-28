@@ -2,6 +2,7 @@ package com.example.generalms.config;
 
 import com.example.generalms.entity.SecurityUser;
 import com.example.generalms.entity.SysUser;
+import com.example.generalms.security.MyFilterSecurityInterceptor;
 import com.example.generalms.security.filter.LoginFilter;
 import com.example.generalms.security.handler.*;
 import com.example.generalms.service.SysUserService;
@@ -14,7 +15,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -29,6 +32,8 @@ public class WebSecurityConfig {
     SysUserService sysUserService;
     @Autowired
     AuthenticationConfiguration authenticationConfiguration;
+    @Autowired
+    MyFilterSecurityInterceptor myFilterSecurityInterceptor;
 
 
     @Bean
@@ -46,7 +51,7 @@ public class WebSecurityConfig {
         // 认证部分
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
         // 授权部分
-
+        http.addFilterBefore(myFilterSecurityInterceptor, FilterSecurityInterceptor.class);
 
         return http.build();
     }
@@ -67,6 +72,9 @@ public class WebSecurityConfig {
     public UserDetailsService userDetailsService() {
         return username -> {
             SysUser sysUser = sysUserService.getUserInfoByName(username);
+            if (sysUser == null) {
+                throw new UsernameNotFoundException("该用户不存在");
+            }
             SecurityUser securityUser = new SecurityUser();
             // TODO 这里的转换不太正确，可能后面会修改成MapStruct
             BeanUtils.copyProperties(sysUser, securityUser);
